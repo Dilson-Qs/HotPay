@@ -17,17 +17,6 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 
-// Função que remove elementos flutuantes com estilos específicos
-const removeFloating = () => {
-  document.querySelectorAll('[style^="position: fixed"][style*="bottom: 1rem"][style*="z-index: 2147483647"]').forEach(el => el.remove());
-};
-
-// Executa a função imediatamente ao carregar
-removeFloating();
-
-// Observa mudanças no DOM e reaplica a função se novos elementos forem adicionados
-const observer = new MutationObserver(removeFloating);
-observer.observe(document.body, { childList: true, subtree: true });
 
 
 const queryClient = new QueryClient();
@@ -108,6 +97,16 @@ const App = () => {
     } else {
       document.documentElement.classList.add('dark');
     }
+
+    // Remove floating elements with specific styles (e.g. third-party badges)
+    const removeFloating = () => {
+      document.querySelectorAll('[style^="position: fixed"][style*="bottom: 1rem"][style*="z-index: 2147483647"]').forEach(el => el.remove());
+    };
+    removeFloating();
+    const observer = new MutationObserver(removeFloating);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
   }, []);
 
   return (
